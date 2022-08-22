@@ -13,6 +13,7 @@ const App = () => {
   const [notification, setNotification] = useState(' ')
 
   const blogFormRef = useRef()
+  const addBlogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -88,6 +89,7 @@ const App = () => {
       setNotification(`a new blog added: ${response.title} by ${response.author}`)
       blogFormRef.current.toggleVisibility()
       setTimeout(() => { setNotification(' ') }, 2000)
+      addBlogFormRef.current.setNewBlog({ 'title': '', 'author': '', 'url': '' })
     } catch (exeption) {
       setNotification(`blog not saved: ${exeption}`)
       setTimeout(() => { setNotification(' ') }, 2000)
@@ -103,7 +105,7 @@ const App = () => {
         }
         return blog
       })
-      setBlogs(newBlogs.sort((a, b) => a.likes - b.likes))
+      setBlogs(newBlogs.sort((a, b) => b.likes - a.likes))
     } catch (exeption) {
       console.log('NOT', exeption)
     }
@@ -124,7 +126,7 @@ const App = () => {
 
   return (
     <div>
-      <p>{ notification }</p>
+      <p className='notification' style={ { color: 'red' } }>{ notification }</p>
       {user === null ?
         loginForm()
         :
@@ -134,7 +136,7 @@ const App = () => {
             <button type="submit">logout</button>
           </form>
           <Togglable showButtonLabel="Add Blog" hideButtonLabel="Cancel" ref={blogFormRef}>
-            <AddBlogForm saveBlog={saveBlog} />
+            <AddBlogForm saveBlog={saveBlog} ref={addBlogFormRef}/>
           </Togglable>
         </div>
       }

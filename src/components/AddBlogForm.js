@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useImperativeHandle, forwardRef } from 'react'
 
-const AddBlogForm = ({ saveBlog }) => {
+const AddBlogForm = forwardRef((props, ref) => {
 
   const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
 
@@ -10,8 +10,14 @@ const AddBlogForm = ({ saveBlog }) => {
       ...newBlog,
       likes: null
     }
-    saveBlog(blogObject)
+    props.saveBlog(blogObject)
   }
+
+  useImperativeHandle(ref, () => {
+    return {
+      setNewBlog
+    }
+  })
 
   return (
     <div>
@@ -48,6 +54,8 @@ const AddBlogForm = ({ saveBlog }) => {
       </form>
     </div>
   )
-}
+})
+
+AddBlogForm.displayName = 'AddBlogForm'
 
 export default AddBlogForm
