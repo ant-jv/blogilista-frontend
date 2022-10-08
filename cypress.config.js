@@ -1,4 +1,4 @@
-const { defineConfig } = require("cypress");
+const { defineConfig } = require('cypress')
 
 module.exports = defineConfig({
   projectId: 'eh3r9t',
@@ -7,4 +7,4 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
   },
-});
+})
