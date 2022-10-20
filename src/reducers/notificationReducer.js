@@ -1,11 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+const timestamp = () => {
+  const d = new Date()
+  let time = d.getTime()
+  return time
+}
+
 const notificationSlice = createSlice({
   name: 'notification',
-  initialState: 'aaaa',
+  initialState: { time: timestamp(), text: '', type: '' },
   reducers: {
     setNotification(state, action) {
-      return action.payload
+      let newState = { ...action.payload, time: timestamp() }
+      return newState
     },
   },
 })

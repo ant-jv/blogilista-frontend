@@ -3,18 +3,12 @@ import blogService from '../services/blogs'
 import { useSelector, useDispatch } from 'react-redux'
 import { setBlogs } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { Form, Button } from 'react-bootstrap'
 
 const AddBlogForm = () => {
-  //TEMPORARY SÄÄTÖ START
-  let user = {}
-  const loggedUserJson = window.localStorage.getItem('loggedInUser')
-  if (loggedUserJson) {
-    user = JSON.parse(loggedUserJson)
-  }
-  //TEMPORARY SÄÄTÖ STOP
-
   const dispatch = useDispatch()
 
+  const user = JSON.parse(window.localStorage.getItem('user'))
   const blogs = useSelector((state) => state.blogs)
 
   const [newBlog, setNewBlog] = useState({ title: '', author: '', url: '' })
@@ -38,33 +32,31 @@ const AddBlogForm = () => {
         setBlogs(blogs.concat(response).sort((a, b) => a.likes - b.likes))
       )
       dispatch(
-        setNotification(
-          `a new blog added: ${response.title} by ${response.author}`
-        )
+        setNotification({
+          text: `a new blog added: ${response.title} by ${response.author}`,
+          type: 'notification',
+        })
       )
-      setTimeout(() => {
-        dispatch(setNotification(''))
-      }, 2000)
       setNewBlog({
         title: '',
         author: '',
         url: '',
       })
     } catch (exeption) {
-      dispatch(setNotification(`blog not saved: ${exeption}`))
-      setTimeout(() => {
-        dispatch(setNotification(''))
-      }, 2000)
+      dispatch(
+        setNotification({ text: `blog not saved: ${exeption}`, type: 'error' })
+      )
     }
   }
 
   return (
     <div>
       <h2>Add new blog</h2>
-      <form onSubmit={saveBlog}>
-        <div>
-          title
-          <input
+      <Form onSubmit={saveBlog}>
+        <Form.Group>
+          <Form.Label>Title</Form.Label>
+
+          <Form.Control
             type="text"
             value={newBlog.title}
             name="Title"
@@ -72,10 +64,8 @@ const AddBlogForm = () => {
               setNewBlog({ ...newBlog, title: target.value })
             }
           />
-        </div>
-        <div>
-          author
-          <input
+          <Form.Label>Author</Form.Label>
+          <Form.Control
             type="text"
             value={newBlog.author}
             name="Author"
@@ -83,10 +73,8 @@ const AddBlogForm = () => {
               setNewBlog({ ...newBlog, author: target.value })
             }
           />
-        </div>
-        <div>
-          url
-          <input
+          <Form.Label>URL</Form.Label>
+          <Form.Control
             type="text"
             value={newBlog.url}
             name="Url"
@@ -94,9 +82,11 @@ const AddBlogForm = () => {
               setNewBlog({ ...newBlog, url: target.value })
             }
           />
-        </div>
-        <button type="submit">add blog</button>
-      </form>
+          <Button variant="primary" type="submit">
+            Submit
+          </Button>
+        </Form.Group>
+      </Form>
     </div>
   )
 }
